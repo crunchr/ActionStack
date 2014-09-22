@@ -1,7 +1,7 @@
 ActionStack.js
 ==============
 
-Adds actions to a stack, so that actions that have already been queued can be triggered at a later time
+Adds actions to a stack, so that actions that have already been queued can be triggered at a later time. Useful for situations where clicks can happen faster than the execution of actions. For example, you can temporarily block an action while a transition is running and execute it when the transition is done.
 
 ## Usage
 
@@ -19,17 +19,25 @@ Check if a function and its arguments is the same as the previously executed fun
 
 ## Example
 
+	var _isAnimating = false;
+
 	function showInfo(id) {
 		if (ActionStack.isPrevious(showInfo, [id])) {
 			ActionStack.next();
 			return;
 		}
 
-		$('#info1, #info2').fadeOut(250, function() {
-			$(id).fadeIn(250, function() {
-				ActionStack.next();
+		if (_isAnimating) {
+			ActionStack.add(showInfo, [id]);
+		} else {
+			_isAnimating = true;
+			$('#info1, #info2').fadeOut(250, function() {
+				$(id).fadeIn(250, function() {
+					_isAnimating = false;
+					ActionStack.next();
+				});
 			});
-		})
+		}
 	}
 
 	$('#button1').on('click', function() {
