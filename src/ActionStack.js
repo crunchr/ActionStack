@@ -37,6 +37,8 @@ modules.utils.ActionStack = (function() {
 	}
 
 	function hash(funk, args) {
+		args = args || [];
+
 		var string = funk.toString() + args.join('-');
 
 		// hash the string to take less memory if the function is long (based on Java's hashCode)
@@ -66,6 +68,8 @@ modules.utils.ActionStack = (function() {
 		if (_stack.length > STACK_SIZE) {
 			return;
 		}
+
+		args = args || [];
 
 		var o = {
 			id		: hash(funk, args),
