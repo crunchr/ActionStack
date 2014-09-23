@@ -24,10 +24,10 @@ SOFTWARE.
 
 */
 
-modules.utils.ActionStack = (function() {
+ActionStack = function(stackSize) {
 
 	// this determines how many actions can be queued
-	var STACK_SIZE = 3;
+	var _stackSize = stackSize !== undefined ? stackSize : 3;
 
 	var _stack;
 	var _previousID;
@@ -36,9 +36,13 @@ modules.utils.ActionStack = (function() {
 		_stack = [];
 	}
 
+	function reset() {
+		_previousID = undefined;
+		_stack = [];
+	}
+
 	function hash(funk, args) {
 		args = args || [];
-
 		var string = funk.toString() + args.join('-');
 
 		// hash the string to take less memory if the function is long (based on Java's hashCode)
@@ -65,16 +69,16 @@ modules.utils.ActionStack = (function() {
 	}
 
 	function add(funk, args) {
-		if (_stack.length > STACK_SIZE) {
+		if (_stackSize !== 0 && _stack.length > _stackSize) {
 			return;
 		}
 
 		args = args || [];
 
 		var o = {
-			id		: hash(funk, args),
-			funk	: funk,
-			args	: args
+			id: hash(funk, args),
+			funk: funk,
+			args: args
 		};
 
 		if (_stack.length) {
@@ -101,16 +105,17 @@ modules.utils.ActionStack = (function() {
 
 	function isPrevious(funk, args) {
 		// checks if the previous action is the same
-		var id = hash(funk, args);
+		var id = hash(funk, args === true ? undefined : args);
 		return _previousID == id;
 	}
 
 	init();
 
 	return {
-		add			: add,
-		next		: next,
-		isPrevious	: isPrevious
+		add: add,
+		next: next,
+		isPrevious: isPrevious,
+		reset: reset
 	};
 
-})();
+};

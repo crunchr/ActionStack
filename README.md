@@ -7,45 +7,50 @@ Adds actions to a stack, so that actions that have already been queued can be tr
 
 Queue a function, or immediately execute it if the stack is empty
 
-	ActionStack.add(function, [argument1, argument2, …]);
+	actionStack.add(function, [argument1, argument2, …]);
 
 Check for the next queued function and execute it
 
-	ActionStack.next();
+	actionStack.next();
 
 Check if a function and its arguments is the same as the previously executed function, returns `true` or `false`
 
-	ActionStack.isPrevious(function, [argument1, argument2, …]);
+	actionStack.isPrevious(function, [argument1, argument2, …]);
+
+Clear the queue
+
+	actionStack.reset();
 
 ## Example
 
+	var _actionStack = new ActionStack();
 	var _isAnimating = false;
 
 	function showInfo(id) {
-		if (ActionStack.isPrevious(showInfo, [id])) {
-			ActionStack.next();
+		if (_actionStack.isPrevious(showInfo, [id])) {
+			_actionStack.next();
 			return;
 		}
 
 		if (_isAnimating) {
-			ActionStack.add(showInfo, [id]);
+			_actionStack.add(showInfo, [id]);
 		} else {
 			_isAnimating = true;
 			$('#info1, #info2').fadeOut(250, function() {
 				$(id).fadeIn(250, function() {
 					_isAnimating = false;
-					ActionStack.next();
+					_actionStack.next();
 				});
 			});
 		}
 	}
 
 	$('#button1').on('click', function() {
-		ActionStack.add(showInfo, ['#info1']);
+		_actionStack.add(showInfo, ['#info1']);
 	})
 
 	$('#button2').on('click', function() {
-		ActionStack.add(showInfo, ['#info2']);
+		_actionStack.add(showInfo, ['#info2']);
 	})
 
 http://www.monokai.nl
