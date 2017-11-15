@@ -119,3 +119,5 @@ var ActionStack = ActionStack || function(stackSize) {
 	};
 
 };
+
+module.exports = ActionStack;
