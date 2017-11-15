@@ -24,7 +24,7 @@ SOFTWARE.
 
 */
 
-ActionStack = function(stackSize) {
+var ActionStack = ActionStack || function(stackSize) {
 
 	// this determines how many actions can be queued
 	var _stackSize = stackSize !== undefined ? stackSize : 3;
